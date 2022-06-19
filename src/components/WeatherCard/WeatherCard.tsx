@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import "./WeatherCard.css";
 
 // Material UI Components
-import { Card, CardContent, Typography, Box, CardActions, Button } from "@mui/material";
+import { Card, CardContent, Typography, Box, CardActions, Button, Grid } from "@mui/material";
 
 // Api
-import { fetchOpenWeatherData, OpenWeatherData, OpenWeatherTempScale } from "../../utils/api";
+import {getWeatherIconSrc, fetchOpenWeatherData, OpenWeatherData, OpenWeatherTempScale } from "../../utils/api";
 
 const WeatherCardContainer: React.FC<{children: React.ReactNode, onDelete?: () => void}> = ({children, onDelete}) => {
   return (
@@ -24,7 +24,7 @@ const WeatherCardContainer: React.FC<{children: React.ReactNode, onDelete?: () =
 
 type WeatherCardState = "loading" | "error" | "ready";
 
-const WeatherCard: React.FC<{ city: string, tempScale: OpenWeatherTempScale, onDelete: () => void }> = ({ city, tempScale, onDelete }) => {
+const WeatherCard: React.FC<{ city: string, tempScale: OpenWeatherTempScale, onDelete?: () => void }> = ({ city, tempScale, onDelete }) => {
   const [weatehrData, setWeatherData] = useState<OpenWeatherData | null>(null);
   const [cardState, setCardState] = useState<WeatherCardState>("loading");
   useEffect(() => {
@@ -49,9 +49,22 @@ const WeatherCard: React.FC<{ city: string, tempScale: OpenWeatherTempScale, onD
 
   return (
     <WeatherCardContainer onDelete={onDelete}>
-      <Typography className="weatherCard-title">{weatehrData.name}</Typography>
-      <Typography className="weatherCard-body">{Math.round(weatehrData.main.temp)}</Typography>
-      <Typography className="weatherCard-body">Feel like: {Math.round(weatehrData.main.feels_like)}</Typography>
+      <Grid container justifyContent="space-around">
+        <Grid item>
+          <Typography className="weatherCard-title">{weatehrData.name}</Typography>
+          <Typography className="weatherCard-temp">{Math.round(weatehrData.main.temp)}</Typography>
+          <Typography className="weatherCard-body">Feel like: {Math.round(weatehrData.main.feels_like)}</Typography>
+          <Typography className="weatherCard-body">Max: {Math.round(weatehrData.main.temp_max)} || Min: {Math.round(weatehrData.main.temp_min)}</Typography>
+        </Grid>
+        <Grid item>
+          {weatehrData.weather.length > 0 && (
+            <>
+              <img src={getWeatherIconSrc(weatehrData.weather[0].icon)} />
+              <Typography className="weatherCard-body">{weatehrData.weather[0].main}</Typography>
+            </>
+          )}
+        </Grid>
+      </Grid>
     </WeatherCardContainer>
         
   );

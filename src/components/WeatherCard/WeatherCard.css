@@ -5,3 +5,8 @@
 .weatherCard-body {
     font-size: 16px !important;
 }
+
+.weatherCard-temp {
+    font-size: 47px !important;
+    text-align: center !important;
+}
